@@ -30,6 +30,6 @@ class Server:
                 resp = "True"
                 conn.send(pickle.dumps(resp))
             elif data[0] == "SEARCH":
-                peer = self.search_data(data)
+                peer = self.search_data(data[1])
                 conn.send(pickle.dumps(peer))
             conn.close()
