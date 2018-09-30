@@ -37,9 +37,9 @@ class Peer:
 
     # procura no servidor de controle se algum peer ja registrou o dado 
     def search_file(self):
+        file = input("Digite o arquivo que deseja procurar\n")
         sock = socket()
         sock.connect((self.s_ip, self.s_port))
-        file = input("Digite o arquivo que deseja procurar\n")
         sock.send(pickle.dumps(("SEARCH", file)))
         resp = pickle.loads(sock.recv(1024))
 

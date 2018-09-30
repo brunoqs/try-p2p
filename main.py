@@ -4,7 +4,7 @@ from peer.peer import *
 choice = input("1- Server / 2- Peer\n")
 if choice == "1":
     s = Server('127.0.0.1', 12000) # ip e porta padrao servidor de controle
-    s.run() 
+    s.run()
 else:
     choice2 = input("1-Download / 2-Upload\n")
     if choice2 == "1":
