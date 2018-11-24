@@ -21,7 +21,7 @@ class Server:
         addr += data
         if data[1] not in self.peer_lists:
             self.peer_lists[data[1]] = [addr]
-        else:
+        else: # colisao de hash
             self.peer_lists[data[1]].append(addr)
         print(self.peer_lists)
 

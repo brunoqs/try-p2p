@@ -70,12 +70,15 @@ class Peer:
         try:
             sock.connect((addr, port))
         except ConnectionRefusedError:
-            sys.exit("Peer desligado!")
+            print("Peer desligado!")
+            return False
         sock.send(pickle.dumps(file))
         resp = pickle.loads(sock.recv(1024))
         sock.close()
         write_file(file, resp)
         print("Download {} terminado".format(file))
+
+        return True
 
     # deixa o socket server peer lendo para outros peers buscar dados
     def listen(self):

@@ -18,8 +18,11 @@ else:
         elif choice2 == "1":
             peer = p.search_file()
             if peer:
-                print(peer)
-                p.download_file(peer[0][3], peer[0][0], int(peer[0][4]))
+                for i in range(len(peer)):
+                    # busca o arquivo nos peers ate encontrar
+                    success = p.download_file(peer[i][3], peer[i][0], int(peer[i][4]))
+                    if success:
+                        break
             else:
                 print("Arquivo nao encontrado")
         else:
