@@ -9,6 +9,8 @@ if choice == "1":
 else:
     choice2 = ""
     p = Peer('127.0.0.1')
+    t = Thread(target=p.listen, args=[])
+    t.start()
     while True:
         choice2 = input("1-Download / 2-Upload / 3-Fechar \n")
         if choice2 == "3":
@@ -21,7 +23,5 @@ else:
             else:
                 print("Arquivo nao encontrado")
         else:
-            if (p.register_peer()):
-                t = Thread(target=p.listen, args=[])
-                t.start()
+            p.register_peer()
 
