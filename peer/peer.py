@@ -1,17 +1,22 @@
 from socket import *
 import pickle
-from utils import *
+from utils import (
+    file_data,
+    file_exists,
+    write_file,
+    # do_decrypt,
+    # do_encrypt,
+)
+import sys
 
 class Peer:
     # socket server peer
     def __init__(self, c_ip = None):
         self.c_ip = c_ip
-
-        if self.c_ip != None:
-            self.sock = socket()
-            self.sock.bind((self.c_ip, 0)) # porta random
-            self.sock.listen(2)
-            self.c_port = self.sock.getsockname()[1]
+        self.sock = socket()
+        self.sock.bind((self.c_ip, 0)) # porta random
+        self.sock.listen(2)
+        self.c_port = self.sock.getsockname()[1]
 
         # dados servidor de controle
         self.s_ip = '127.0.0.1'
@@ -25,7 +30,10 @@ class Peer:
             return False
 
         sock = socket()
-        sock.connect((self.s_ip, self.s_port))
+        try:
+            sock.connect((self.s_ip, self.s_port))
+        except ConnectionRefusedError:
+            sys.exit("Server de controle desligado")
         sock.send(pickle.dumps(("REGISTER", file, self.c_port))) # informa a porta do peer server
         resp = pickle.loads(sock.recv(1024))
 
@@ -39,7 +47,10 @@ class Peer:
     def search_file(self):
         file = input("Digite o arquivo que deseja procurar\n")
         sock = socket()
-        sock.connect((self.s_ip, self.s_port))
+        try:
+            sock.connect((self.s_ip, self.s_port))
+        except ConnectionRefusedError:
+            sys.exit("Server de controle desligado")
         sock.send(pickle.dumps(("SEARCH", file)))
         resp = pickle.loads(sock.recv(1024))
 
@@ -56,12 +67,12 @@ class Peer:
         try:
             sock.connect((addr, port))
         except ConnectionRefusedError:
-            print("Peer desligado!")
+            sys.exit("Peer desligado!")
         sock.send(pickle.dumps(file))
         resp = pickle.loads(sock.recv(1024))
         sock.close()
-        print("Download: " + resp)
-
+        write_file(file, resp)
+        print("Download {} terminado".format(file))
 
     # deixa o socket server peer lendo para outros peers buscar dados
     def listen(self):
