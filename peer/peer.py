@@ -36,7 +36,7 @@ class Peer:
         except ConnectionRefusedError:
             sys.exit("Server de controle desligado")
         hash_file = md5(file.encode('utf-8')).hexdigest()
-        sock.send(pickle.dumps(("REGISTER", hash_file, file, self.c_port))) # informa a porta do peer server
+        sock.send(pickle.dumps("REGISTER {} {} {}".format(hash_file, file, self.c_port))) # informa a porta do peer server
         resp = pickle.loads(sock.recv(1024))
 
         if resp == "True":
@@ -54,7 +54,7 @@ class Peer:
         except ConnectionRefusedError:
             sys.exit("Server de controle desligado")
         hash_file = md5(file.encode('utf-8')).hexdigest()
-        sock.send(pickle.dumps(("SEARCH", hash_file)))
+        sock.send(pickle.dumps("SEARCH {}".format(hash_file)))
         resp = pickle.loads(sock.recv(1024))
 
         if resp != None:

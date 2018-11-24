@@ -18,13 +18,18 @@ class Server:
         return None
     
     def register_data(self, addr, data):
-        addr += (data, )
+        addr += data
         if data[1] not in self.peer_lists:
-            self.peer_lists[data[1]] = addr
+            self.peer_lists[data[1]] = [addr]
+        else:
+            self.peer_lists[data[1]].append(addr)
         print(self.peer_lists)
 
     def conn_handler(self, conn, addr):
         data = pickle.loads(conn.recv(1024))
+        data = data.split()
+        addr = list(addr)
+        del addr[1]
         if data[0] == "REGISTER":
             self.register_data(addr, data)
             resp = "True"
