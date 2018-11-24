@@ -3,8 +3,8 @@ import os
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-counter = os.urandom(16)
-key = os.urandom(32)
+# counter = os.urandom(16)
+# key = os.urandom(32)
 
 # retorna os dados de um arquivo
 def file_data(file):

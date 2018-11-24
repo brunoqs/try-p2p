@@ -17,7 +17,7 @@ else:
             peer = p.search_file()
             if peer:
                 print(peer)
-                p.download_file(peer[2][1], peer[0], peer[2][2])
+                p.download_file(peer[2][2], peer[0], peer[2][3])
             else:
                 print("Arquivo nao encontrado")
         else:

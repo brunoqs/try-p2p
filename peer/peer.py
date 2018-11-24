@@ -1,5 +1,6 @@
 from socket import *
 import pickle
+from hashlib import md5
 from utils import (
     file_data,
     file_exists,
@@ -34,7 +35,8 @@ class Peer:
             sock.connect((self.s_ip, self.s_port))
         except ConnectionRefusedError:
             sys.exit("Server de controle desligado")
-        sock.send(pickle.dumps(("REGISTER", file, self.c_port))) # informa a porta do peer server
+        hash_file = md5(file.encode('utf-8')).hexdigest()
+        sock.send(pickle.dumps(("REGISTER", hash_file, file, self.c_port))) # informa a porta do peer server
         resp = pickle.loads(sock.recv(1024))
 
         if resp == "True":
@@ -51,7 +53,8 @@ class Peer:
             sock.connect((self.s_ip, self.s_port))
         except ConnectionRefusedError:
             sys.exit("Server de controle desligado")
-        sock.send(pickle.dumps(("SEARCH", file)))
+        hash_file = md5(file.encode('utf-8')).hexdigest()
+        sock.send(pickle.dumps(("SEARCH", hash_file)))
         resp = pickle.loads(sock.recv(1024))
 
         if resp != None:

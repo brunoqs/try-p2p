@@ -10,17 +10,17 @@ class Server:
         self.sock = socket()
         self.sock.bind((self.s_ip, self.s_port))
         self.sock.listen(5)
-        self.peer_lists = []
+        self.peer_lists = {}
 
     def search_data(self, data):
-        for peer in self.peer_lists:
-            if data in peer[2]:
-                return peer
+        if data in self.peer_lists:
+            return self.peer_lists[data]
         return None
     
     def register_data(self, addr, data):
         addr += (data, )
-        self.peer_lists.append(addr)
+        if data[1] not in self.peer_lists:
+            self.peer_lists[data[1]] = addr
         print(self.peer_lists)
 
     def conn_handler(self, conn, addr):
