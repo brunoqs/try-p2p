@@ -5,8 +5,8 @@ from utils import (
     file_data,
     file_exists,
     write_file,
-    # do_decrypt,
-    # do_encrypt,
+    do_decrypt,
+    do_encrypt,
 )
 import sys
 
@@ -35,9 +35,10 @@ class Peer:
             sock.connect((self.s_ip, self.s_port))
         except ConnectionRefusedError:
             sys.exit("Server de controle desligado")
-        hash_file = md5(file.encode('utf-8')).hexdigest()
-        sock.send(pickle.dumps("REGISTER {} {} {}".format(hash_file, file, self.c_port))) # informa a porta do peer server
-        resp = pickle.loads(sock.recv(1024))
+        hash_file = md5(file.encode('utf-8')).hexdigest() # hash nome do arquivo
+        encrypt = do_encrypt("REGISTER {} {} {}".format(hash_file, file, self.c_port))
+        sock.send(encrypt) 
+        resp = do_decrypt(sock.recv(1024))
 
         if resp == "True":
             print("Arquivo registrado com sucesso")
@@ -54,8 +55,8 @@ class Peer:
         except ConnectionRefusedError:
             sys.exit("Server de controle desligado")
         hash_file = md5(file.encode('utf-8')).hexdigest()
-        sock.send(pickle.dumps("SEARCH {}".format(hash_file)))
-        resp = pickle.loads(sock.recv(1024))
+        sock.send(do_encrypt("SEARCH {}".format(hash_file)))
+        resp = pickle.loads(do_decrypt(sock.recv(1024)))
 
         if resp != None:
             sock.close()
@@ -72,10 +73,10 @@ class Peer:
         except ConnectionRefusedError:
             print("Peer desligado!")
             return False
-        sock.send(pickle.dumps(file))
-        resp = pickle.loads(sock.recv(1024))
+        sock.send(do_encrypt(file))
+        resp = do_decrypt(sock.recv(1024))
         sock.close()
-        write_file(file, resp)
+        write_file(file, resp) # cria um arquivo com os dados baixados
         print("Download {} terminado".format(file))
 
         return True
@@ -84,7 +85,7 @@ class Peer:
     def listen(self):
         while True:
             conn, addr = self.sock.accept()
-            file = pickle.loads(conn.recv(1024))
-            data = file_data(file)
-            conn.send(pickle.dumps(data))
+            file = do_decrypt(conn.recv(1024))
+            data = file_data(file) # le o arquivo para envia seus dados
+            conn.send(do_encrypt(data))
         conn.close()
