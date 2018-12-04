@@ -5,8 +5,8 @@ from utils import (
     file_data,
     file_exists,
     write_file,
-    do_decrypt,
-    do_encrypt,
+    # do_decrypt,
+    # do_encrypt,
 )
 import sys
 
@@ -36,9 +36,9 @@ class Peer:
         except ConnectionRefusedError:
             sys.exit("Server de controle desligado")
         hash_file = md5(file.encode('utf-8')).hexdigest() # hash nome do arquivo
-        encrypt = do_encrypt("REGISTER {} {} {}".format(hash_file, file, self.c_port))
+        encrypt = pickle.dumps("REGISTER {} {} {}".format(hash_file, file, self.c_port))
         sock.send(encrypt) 
-        resp = do_decrypt(sock.recv(1024))
+        resp = pickle.loads(sock.recv(1024))
 
         if resp == "True":
             print("Arquivo registrado com sucesso")
@@ -55,8 +55,8 @@ class Peer:
         except ConnectionRefusedError:
             sys.exit("Server de controle desligado")
         hash_file = md5(file.encode('utf-8')).hexdigest()
-        sock.send(do_encrypt("SEARCH {}".format(hash_file)))
-        resp = pickle.loads(do_decrypt(sock.recv(1024)))
+        sock.send(pickle.dumps("SEARCH {}".format(hash_file)))
+        resp = pickle.loads(sock.recv(1024))
 
         if resp != None:
             sock.close()
@@ -73,8 +73,8 @@ class Peer:
         except ConnectionRefusedError:
             print("Peer desligado!")
             return False
-        sock.send(do_encrypt(file))
-        resp = do_decrypt(sock.recv(1024))
+        sock.send(pickle.dumps(file))
+        resp = pickle.loads(sock.recv(1024))
         sock.close()
         write_file(file, resp) # cria um arquivo com os dados baixados
         print("Download {} terminado".format(file))
@@ -85,7 +85,7 @@ class Peer:
     def listen(self):
         while True:
             conn, addr = self.sock.accept()
-            file = do_decrypt(conn.recv(1024))
+            file = pickle.loads(conn.recv(1024))
             data = file_data(file) # le o arquivo para envia seus dados
-            conn.send(do_encrypt(data))
+            conn.send(pickle.dumps(data))
         conn.close()

@@ -1,5 +1,5 @@
 import os
-from Crypto.Cipher import AES
+# from Crypto.Cipher import AES
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,20 +31,20 @@ def write_file(name, data):
     file.write(data)
     file.close()
 
-# criptografa
-def do_encrypt(message):
-    enc = AES.new(key, AES.MODE_CTR, counter=lambda: counter)
-    encrypted = enc.encrypt(message)
-    return encrypted
+# # criptografa
+# def do_encrypt(message):
+#     enc = AES.new(key, AES.MODE_CTR, counter=lambda: counter)
+#     encrypted = enc.encrypt(message)
+#     return encrypted
 
-# descriptografa
-def do_decrypt(ciphertext):
-    dec = AES.new(key, AES.MODE_CTR, counter=lambda: counter)
-    decrypted = dec.decrypt(ciphertext)
+# # descriptografa
+# def do_decrypt(ciphertext):
+#     dec = AES.new(key, AES.MODE_CTR, counter=lambda: counter)
+#     decrypted = dec.decrypt(ciphertext)
 
-    try:
-        decrypted = decrypted.decode('utf-8')
-    except UnicodeDecodeError: # caso do pickle para enviar uma estrutura no socket
-        pass
+#     try:
+#         decrypted = decrypted.decode('utf-8')
+#     except UnicodeDecodeError: # caso do pickle para enviar uma estrutura no socket
+#         pass
 
-    return decrypted
+#     return decrypted
